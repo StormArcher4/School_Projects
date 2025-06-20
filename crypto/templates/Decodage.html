@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>WhisperDots – Decodage</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/WhisperDots.css') }}">
+   <style>
+     .column-container { display: flex; gap: 20px; margin: 20px; }
+     .input-col, .output-col { flex: 1; }
+     .result-area { border: 1px solid #ccc; padding: 10px; min-height: 150px; white-space: pre-wrap; }
+     #botton3 { float: left; margin-right: 10px; width: 150px; }
+   </style>
+</head>
+<body>
+   <div class="main">
+      <div class="navbar">
+         <div class="icon">
+            <h2 class="logo">WhisperDots!</h2>
+         </div>
+         <div class="menu">
+            <ul>
+               <li><a href="{{ url_for('home') }}">HOME</a></li>
+               <li><a href="{{ url_for('whisperdots') }}">CODAGE</a></li>
+               <li><a href="{{ url_for('Decodage') }}">DECODAGE</a></li>
+
+            </ul>
+         </div>
+      </div>
+   </div>
+
+   <div class="column-container">
+      <!-- Area for text to be coded -->
+      <div class="input-col">
+         <div id="dotMatrix" class="result-area">Loading code in dots...</div>
+      </div>
+
+      <!-- decoding area -->
+      <div class="output-col">
+         <div id="decodedText" class="result-area"></div>
+         <button onclick="decodeCode()" class="botton" id="botton3">Decoder</button>
+         <button onclick="copyResult()" class="botton" id="botton5">Copy</button>
+      </div>
+   </div>
+
+      <script>
+      let lastCode = "";
+
+      window.onload = function () {
+         // Clear any cached data
+         console.log(window.location.href);
+         document.getElementById('dotMatrix').innerHTML = 'Loading code in dots...';
+         document.getElementById('decodedText').innerHTML = '';
+
+         // Get the code value from the URL’s query string to transforme it back tto letters
+         const urlParams = new URLSearchParams(window.location.search);
+         const code = urlParams.get('code');
+         console.log("Code received:", code); // Debug output
+         
+         if (!code) {
+            document.getElementById('dotMatrix').innerText = 'No code provided.';
+            return;
+         }
+         lastCode = code;
+
+          // We send the 'code' to the server to get the dot pattern back
+         fetch('/analyze', {
+            method: 'POST', 
+            headers: { 
+               'Content-Type': 'application/json',  // Tell server we’re sending JSON
+               'Cache-Control': 'no-cache, no-store, must-revalidate', // No caching please
+               'Pragma': 'no-cache',
+               'Expires': '0'
+            },
+            // The actual data we send, as JSON — the text to analyze and a timestamp
+            body: JSON.stringify({ 
+               text: code,
+               timestamp: new Date().getTime()  // Current time in milliseconds
+            })
+         })
+         .then(response => {
+            // Check if server responded okay, if not throw an error to be caught later
+            if (!response.ok) {
+               throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            //server’s response as JSON
+            return response.json();
+         })
+         .then(data => {
+            // Just print the data to console for debugging
+            console.log("Response received:", data);
+            
+            // If server sent back a valid 'output', put it inside the dotMatrix box on the page
+            if (data && data.output) {
+               document.getElementById('dotMatrix').innerHTML = data.output;
+            } else {
+               // If output is missing or invalid, show this message instead
+               document.getElementById('dotMatrix').innerText = 'Invalid or empty response from server.';
+            }
+         })
+         .catch(error => {
+            // If anything went wrong with the request, catch it here and show an error message
+            console.error('Error:', error);
+            document.getElementById('dotMatrix').innerText = 'Error loading dots: ' + error;
+         });
+
+
+      function decodeCode() {
+         if (!lastCode) {
+            alert("No code to decode.");
+            return;
+         }
+         
+         console.log("Decoding code:", lastCode); // Debug output
+            // Show a temporary message while decoding is in progress
+         document.getElementById('decodedText').innerText = 'Decoding...';
+         
+         fetch('/decode-from-code', {
+            method: 'POST',
+            headers: { 
+               'Content-Type': 'application/json',
+               'Cache-Control': 'no-cache, no-store, must-revalidate',
+               'Pragma': 'no-cache',
+               'Expires': '0'
+            },
+            body: JSON.stringify({ 
+               code: lastCode,
+               timestamp: new Date().getTime() // Add timestamp to bust cache
+            })
+         })
+         .then(response => {
+            if (!response.ok) {
+               throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+         })
+         .then(data => {
+            console.log("Decoded data:", data); // Debug output
+            if (data && data.text) {
+               document.getElementById('decodedText').innerText = data.text;
+            } else {
+               document.getElementById('decodedText').innerText = 'Invalid or expired code.';
+            }
+         })
+         .catch(error => {
+            console.error('Decode error:', error);
+            document.getElementById('decodedText').innerText = 'Error decoding: ' + error;
+         });
+      }
+
+      function copyResult() {
+          // Get the text currently shown in the decodedText area
+         const text = document.getElementById('decodedText').innerText;
+         if (!text || text === 'Invalid or expired code.' || text === 'Decoding...') {
+            alert("Nothing to copy!");
+            return;
+         }
+         
+         navigator.clipboard.writeText(text)
+            .then(() => alert("Copied!"))
+            .catch(err => alert("Copy failed: " + err));
+      }
+   </script>
+</body>
+</html>

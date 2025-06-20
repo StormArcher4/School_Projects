@@ -1,0 +1,214 @@
+*{
+   margin: 0;
+   padding: 0;
+}
+body{
+   background-color: #161616;
+  background-image: url('../images/2.jpg');
+   background-size:180%; 
+   background-repeat: no-repeat;
+   background-position: center;
+   justify-content: center;
+   }
+.main{
+   position: relative;
+   width: 100%;
+   overflow: hidden;
+   height: 109vh;
+}
+.navbar{
+   width: auto;
+   height:75px;
+   margin:auto;
+   background-color: black;
+   position: relative;
+   z-index: 2;}
+   .icon {
+      float: left;
+      font-size: 48px;
+      font-weight: bold;
+      background: linear-gradient(to right, #1e3c72, #2a5298, #6dd5ed);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+  }
+.logo{
+   color: rgb(249, 249, 249);
+   font-size: 35px;
+   font-family: Arial;
+   padding-left: 20px;
+   float: left;
+   padding-top: 10px;
+   
+}
+.menu{
+   width: 400px;
+   float: left;
+   height: 70px;
+
+}
+ul{
+   float: left;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-left: 60px;
+   
+}
+ul li{
+   list-style: none;
+   margin-top: 27px;
+   margin-left: 62px;
+   font-size: 14px;
+}
+ul li a{
+   text-decoration: none;
+   color: white;
+   font-family: Arial;
+   font-weight: bold;
+   font-size: 18px;
+   transition: 0.3s ease-in-out;
+}
+ul li a:hover{
+   color: rgb(33, 125, 232);
+}
+.logo::before{
+   content: '';
+   position: absolute;
+   top:0;
+   right: 0;
+   width:100%;
+   height: 100%;
+   animation: showRight 3.5s ease forwards;
+   animation-delay: .4s;
+   background: black;
+}
+
+.botton{
+   padding: 15px 40px;
+   border: none;
+   color: white;
+   outline: none;
+   cursor: pointer;
+   position: absolute;
+   margin-left: 370px;
+   top:190px;
+   z-index: 0;
+   border-radius: 12px;
+   text-transform: uppercase;
+   font-size: 16px;
+   font-weight: bold;
+}
+#botton2 , #botton4{
+   margin-left: 520px;
+}
+#botton5{
+   margin-left:550px;
+}
+
+
+.botton::after{
+   content: "";
+   z-index: -1;
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background-color: #333;
+   left: 0;
+   top: 0;
+   border-radius: 10px;
+}
+.botton::before{
+   content: "";
+   background:linear-gradient(
+      45deg,
+      #FF0000,#FF7300,#FFFB00,#48FF00
+      ,#00FFD5,#002BFF,#FF00C8,#FF0000
+   );
+   z-index: -1;
+   position: absolute;
+   top: -2px;
+   left: -2px;
+   background-size: 600%;
+   width: calc(100% + 4px);
+   height: calc(100% + 4px);
+   filter: blur(8px);
+   animation: glowing 20s linear infinite ;
+   transition: opacity .3s ease-in-out;
+   opacity: 1;
+   border-radius: 10px;
+  
+}
+textarea {
+   position: absolute;
+   top:250px;
+   z-index: 3;
+  width: 600px;
+  height: 600px;
+  margin-left: 100px;
+  background-color: rgb(36, 29, 29);
+  color: white;
+  border-radius: 12px;
+  padding: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 16px;
+  outline: none;
+  line-height: 1.6;
+}
+
+.botton:hover::before{
+   opacity: 1;
+}
+.botton:active::after{
+  background: transparent;
+}
+
+
+
+
+@keyframes glowing {
+   0% {background-position:0 0;}
+   50% {background-position:400% 0;}
+   100% {background-position:0 0;}
+}
+
+@keyframes showRight {
+   100%{
+      width: 0;
+   }
+   
+}
+
+.result-area {
+   position: absolute;
+   top:250px;
+   z-index: 3;
+  width: 600px;
+  height: 600px;
+  margin-left: 100px;
+  background-color: rgb(36, 29, 29);
+  color: white;
+  border-radius: 12px;
+  padding: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 16px;
+  outline: none;
+  line-height: 1.6;
+   /* preserve every space and <br> exactly as you generate it */
+   white-space: pre;           
+   /* fixed-width font keeps your dots aligned */
+   font-family: monospace;     
+   /* add a horizontal scrollbar instead of breaking out */
+   overflow-x: auto;          
+   /* optionally hide vertical overflow or let it scroll vertically too */
+   overflow-y: auto;          
+   max-width: 600px;           /* or whatever your div width is */
+   max-height: 600px; 
+
+ }
+ #resultDiv {
+   font-size: 24px;  /* Adjust size if needed */
+   white-space: pre-wrap;  /* Preserve spaces and line breaks */
+   font-family: monospace;  /* Ensures even spacing for alignment */
+   line-height: 1.5; /* Optional: Adjust line spacing */
+}

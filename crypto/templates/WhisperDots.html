@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>WhisperDots</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/WhisperDots.css') }}">
+
+</head>
+<body >
+   <div class="main">
+      <div class="navbar">
+         <div class="icon">
+            <h2 class="logo">WhisperDots!</h2> 
+         </div>
+         <div class="menu">
+          <ul>
+            <li><a href="{{ url_for('home') }}">HOME</a></li>
+            <li><a href="{{ url_for('whisperdots') }}">CODAGE</a></li>
+            <li><a href="{{ url_for('Decodage') }}">DECODAGE</a></li>
+         </ul>
+         </div>
+      </div>
+   </div>
+   <div style="display: flex;">
+      <div style="flex: 1;">
+        <textarea id="inputText" placeholder="Enter text"></textarea>
+        <button onclick="transformText()" class="botton" id="botton1" >Coder</button>
+        <button onclick="clearText()" class="botton" id="botton2">Annuler</button>
+      </div>
+      
+      <div style="flex: 1;">
+        <div id="resultText" class="result-area"></div>
+        <button onclick="sendMessage()" class="botton" id="botton3">Send </button>
+        <button onclick="clearText()" class="botton" id="botton4">Annuler</button>
+              <!-- This is where the shareable link will appear -->
+      <div id="shareLink" style="margin-top:10px;"></div>
+      </div>
+    </div>
+    
+    <script>
+      let lastCode = "";
+  
+      function transformText() {
+        const txt = document.getElementById('inputText').value.trim();
+        if (!txt) { alert('Please enter some text first.'); return; }
+  
+        // Generate & display dot-matrix
+        fetch('/analyze', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ text: txt })
+        })
+        .then(r=>r.json())
+        .then(data=>{
+          console.log('analyze output:', data.output);
+          document.getElementById('resultText').innerHTML = data.output;
+        })
+        .catch(e=>console.error('analyze error:', e));
+  
+        // Generate plain-text code
+        fetch('/encode-to-code', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ text: txt })
+        })
+        .then(r=>r.json())
+        .then(data=>{
+          console.log('encoded code:', data.code);
+          lastCode = data.code;
+        })
+        .catch(e=>console.error('encode-to-code error:', e));
+      }
+  
+      function clearText() {
+        document.getElementById('inputText').value = '';
+        document.getElementById('resultText').innerHTML = '';
+        document.getElementById('shareLink').innerHTML = '';
+        lastCode = '';
+      }
+  
+      function sendMessage() {
+        if (!lastCode) {
+          alert('Please click "Coder" first to generate your code.');
+          return;
+        }
+        const url = `${window.location.origin}/Decodage?code=${encodeURIComponent(lastCode)}`;
+        console.log('sharing URL:', url);
+        navigator.clipboard.writeText(url)
+          .then(()=>{
+            alert('Share link copied to clipboard!');
+          })
+          .catch(err=>alert('Copy failed: '+err));
+      }
+    </script>
+
+</body>
+</html>

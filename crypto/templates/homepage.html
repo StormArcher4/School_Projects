@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>WhisperDots</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+</head>
+<body>
+   <div class="main">
+      <div class="navbar">
+         <div class="icon">
+            <h2 class="logo">WhisperDots!</h2> 
+         </div>
+         <div class="menu">
+            <ul>
+              <li><a href="{{ url_for('home') }}">HOME</a></li>
+              <li><a href="{{ url_for('whisperdots') }}">CODAGE</a></li>
+              <li><a href="{{ url_for('Decodage') }}">DECODAGE</a></li>
+
+           </ul>
+           </div>
+         <div class="register">
+            <a href="{{ url_for('whisperdots') }}">
+               <button class="btn">EXPLORE NOW</button>
+            </a>
+         </div>
+      </div>
+   </div>
+
+   <h1>🤫 Welcome to WhisperDots! 🔵✨</h1>
+
+   <div class="container">
+     
+      <video src="{{ url_for('static', filename='videos/proget video.mp4') }}" muted loop autoplay></video>
+   </div>
+ <!-- to make video dark-->
+   <div class="video-overlay"></div> 
+
+   <div class="content">
+      <div class="text">
+         <h3>Whether you're playing spy, sending coded love notes, or just having fun with cryptography, WhisperDots keeps your words safe and stylish!</h3>
+         <h3 class="try">👉 Try it now and start whispering in dots! 🔵🔴🟡</h3>
+      </div>
+   </div>
+
+   <a href="{{ url_for('whisperdots') }}">
+      <button class="explore"><span></span>Try It Now</button>
+   </a>
+
+   <script>
+      const video = document.querySelector('video');
+      video.playbackRate = 0.75;
+   </script>
+</body>
+</html>
